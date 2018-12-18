@@ -198,8 +198,8 @@ function esign_field_formatter_view($entity_type, $entity, $field, $instance, $l
       foreach ($items as $key => $value) {
         $element[$key] = array(
           '#type' => 'markup',
-          '#markup' => t('<div class="esignature"><img src="!signature" alt="@signer_name" /></div><div class="signer_name">@signer_name</div><div class="signer_title">@signer_title</div><div class="created">@created</div><br/>', array(
-            '!signature' => $value['esignature'],
+          '#markup' => t('<div class="esignature"><img src="@signature" alt="@signer_name" /></div><div class="signer_name">@signer_name</div><div class="signer_title">@signer_title</div><div class="created">@created</div><br/>', array(
+            '@signature' => $value['esignature'],
             '@signer_name' => $value['signer_name'],
             '@signer_title' => $value['signer_title'],
             '@created' => format_date($value['created']),
