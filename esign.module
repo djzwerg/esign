@@ -54,6 +54,8 @@ function esign_field_widget_info() {
         'penColor' => 'rgba(0,0,0,1)',
         'velocityFilterWeight' => 0.7,
         'toDataURL' => '',
+        'hide_name' => FALSE,
+        'hide_title' => FALSE,
       ),
     ),
   );
@@ -64,11 +66,10 @@ function esign_field_widget_info() {
  */
 function esign_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
+  $settings = esign_field_widget_info()['esign_signature_widget']['settings'];
+
   if(isset($widget['settings']['advanced_settings'])) {
-    $settings = $widget['settings']['advanced_settings'];
-  }
-  else {
-    $settings = esign_field_widget_info()['esign_signature_widget']['settings'];
+    $settings = array_merge($settings, $widget['settings']['advanced_settings']);
   }
 
   $form = array();
@@ -137,6 +138,20 @@ function esign_field_widget_settings_form($field, $instance) {
       '#required' => TRUE,
       '#size' => 5,
       '#description' => t('Weight used to modify new velocity based on the previous velocity.'),
+    );
+
+    $form['advanced_settings']['hide_name'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Hide Signer Name'),
+      '#default_value' => $settings['hide_name'],
+      '#description' => t('Hides the Signer Name field.'),
+    );
+
+    $form['advanced_settings']['hide_title'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Hide Signer Title'),
+      '#default_value' => $settings['hide_title'],
+      '#description' => t('Hides the Signer Title field.'),
     );
 
     $form['advanced_settings']['toDataURL'] = array(
@@ -219,6 +234,8 @@ function esign_element_info() {
       '#process' => array('esign_form_process'),
       '#tree' => TRUE,
       '#esign_options' => array(),
+      '#hide_name' => FALSE,
+      '#hide_title' => FALSE,
     ),
   );
 }
@@ -234,11 +251,15 @@ function esign_form_process($element, $form_state, $complete_form = array()) {
   $settings = $settings['esign_signature_widget']['settings'];
 
   // Override the default settings with the ones passed in via the form.
+  $settings['hide_name'] = $element['#hide_name'];
+  $settings['hide_title'] = $element['#hide_title'];
+
   if (isset($element['#esign_options']) && count($element['#esign_options']) > 0) {
     $settings = array_merge($settings, $element['#esign_options']);
   }
   $element = esign_signature_form_base(LANGUAGE_NONE, array(), $element['#name'], $element, $settings);
   $element['#tree'] = TRUE;
+
   return $element;
 }
 
@@ -289,23 +310,27 @@ function esign_signature_form_base($langcode, $items, $delta, $element, $setting
     '#default_value' => isset($items[$delta]['esignature']) ? $items[$delta]['esignature'] : '',
   );
 
-  $element['signer_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Signer Name'),
-    '#default_value' => isset($items[$delta]['signer_name']) ? $items[$delta]['signer_name'] : '',
-    '#required' => $element['#required'],
-    '#size' => 60,
-    '#attributes' => array('maxlength' => 255),
-  );
+  if($settings['hide_name'] == FALSE) {
+    $element['signer_name'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Signer Name'),
+      '#default_value' => isset($items[$delta]['signer_name']) ? $items[$delta]['signer_name'] : '',
+      '#required' => $element['#required'],
+      '#size' => 60,
+      '#attributes' => array('maxlength' => 255),
+    );
+  }
 
-  $element['signer_title'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Signer Title'),
-    '#default_value' => isset($items[$delta]['signer_title']) ? $items[$delta]['signer_title'] : '',
-    '#required' => $element['#required'],
-    '#size' => 60,
-    '#attributes' => array('maxlength' => 255),
-  );
+  if($settings['hide_title'] == FALSE) {
+    $element['signer_title'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Signer Title'),
+      '#default_value' => isset($items[$delta]['signer_title']) ? $items[$delta]['signer_title'] : '',
+      '#required' => $element['#required'],
+      '#size' => 60,
+      '#attributes' => array('maxlength' => 255),
+    );
+  }
 
   $element['created'] = array(
     '#type' => 'hidden',
