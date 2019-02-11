@@ -4,5 +4,5 @@ core = 7.x
 php = 5.5
 package = Content
 stylesheets[all][] = css/esign.css
-dependencies[] = libraries
+dependencies[] = jquery_update
 dependencies[] = field

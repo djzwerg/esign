@@ -53,6 +53,7 @@ function esign_field_widget_info() {
         'backgroundColor' => 'rgba(0,0,0,0)',
         'penColor' => 'rgba(0,0,0,1)',
         'velocityFilterWeight' => 0.7,
+        'toDataURL' => '',
       ),
     ),
   );
@@ -63,7 +64,12 @@ function esign_field_widget_info() {
  */
 function esign_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
-  $settings = $widget['settings']['advanced_settings'];
+  if(isset($widget['settings']['advanced_settings'])) {
+    $settings = $widget['settings']['advanced_settings'];
+  }
+  else {
+    $settings = esign_field_widget_info()['esign_signature_widget']['settings'];
+  }
 
   $form = array();
 
@@ -132,6 +138,18 @@ function esign_field_widget_settings_form($field, $instance) {
       '#size' => 5,
       '#description' => t('Weight used to modify new velocity based on the previous velocity.'),
     );
+
+    $form['advanced_settings']['toDataURL'] = array(
+      '#type' => 'select',
+      '#title' => t('Signature File Format'),
+      '#default_value' => $settings['toDataURL'],
+      '#options' => array(
+        '' => 'PNG',
+        'image/jpeg' => 'JPEG',
+        'image/svg+xml' => 'SVG',
+      ),
+      '#description' => t('The file format of the saved signature image.'),
+    );
   }
   return $form;
 }
@@ -165,26 +183,6 @@ function esign_field_is_empty($item, $field) {
     return TRUE;
   }
   return FALSE;
-}
-
-/**
- * Implements hook_libraries_info().
- */
-function esign_libraries_info() {
-  $libraries['signature_pad'] = array(
-    'name' => 'Signature Pad',
-    'vendor url' => 'https://github.com/szimek/signature_pad',
-    'download url' => 'https://github.com/szimek/signature_pad/archive/master.zip',
-    'version arguments' => array(
-      'file' => 'example/js/signature_pad.js',
-      'pattern' => '@Signature Pad v([0-9a-zA-Z\.-]+)@',
-      'lines' => 20,
-    ),
-    'files' => array(
-      'js' => array('example/js/signature_pad.js'),
-    ),
-  );
-  return $libraries;
 }
 
 /**
@@ -264,14 +262,9 @@ function esign_signature_form_base($langcode, $items, $delta, $element, $setting
     $title = check_plain($element['#title']);
   }
 
-  // Load the signature pad library.
-  if (($library = libraries_load('signature_pad')) && !empty($library['loaded'])) {
-    drupal_add_js(drupal_get_path('module', 'esign') . '/js/esign.js');
-  }
-  else {
-    watchdog('esign', 'Failed to load Signature Pad library.', array(), WATCHDOG_ERROR);
-    form_set_error(t('There was an error loading the Signature Pad library.'));
-  }
+  // Load the signature pad JS from CDN.
+  drupal_add_js('https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js');
+  drupal_add_js(drupal_get_path('module', 'esign') . '/js/esign.js');
 
   $description = '';
   if ($element['#description']) {
