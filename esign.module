@@ -357,7 +357,7 @@ function esign_signature_form_base($langcode, $items, $delta, $element, $setting
  */
 function esign_help($path, $arg) {
   switch ($path) {
-    case 'admin/help#MYMODULE':
+    case 'admin/help#esign':
 
       $filepath = dirname(__FILE__) . '/README.md';
       if (file_exists($filepath)) {
