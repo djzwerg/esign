@@ -44,7 +44,7 @@
 
       // Add the "clear" button.
       thisContainer.find('.esign_panel .clear-container').remove();
-      thisContainer.find('.esign_panel').append('<div class="clear-container"><br/><a href="#" class="clear">' + Drupal.t('Clear') + '</a></div>');
+      thisContainer.find('.esign_panel').append('<div class="clear-container"><br/><a href="#" class="clear">' + Drupal.t('Clear Signature') + '</a></div>');
 
       // Make the clear button work.
       thisContainer.find('.esign_panel .clear').click(function (e) {
