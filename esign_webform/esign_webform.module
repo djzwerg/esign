@@ -94,13 +94,13 @@ function _webform_render_esign($component, $value = NULL, $filter = TRUE) {
   $form_item = array(
     '#type' => 'esign_signature',
     '#field_name' => 'esign_signature_field',
-    '#title' => $filter ? _webform_filter_xss($component['name']) : $component['name'],
+    '#title' => $filter?_webform_filter_xss($component['name']) : $component['name'],
     '#required' => $component['required'],
     '#hide_name' => $component['extra']['hide_name'],
     '#hide_title' => $component['extra']['hide_title'],
     '#weight' => $component['weight'],
-    '#description' => $filter ? _webform_filter_descriptions($component['extra']['description']) : $component['extra']['description'],
-    '#default_value' => $filter ? _webform_filter_values($component['value']) : $component['value'],
+    '#description' => $filter?_webform_filter_descriptions($component['extra']['description']) : $component['extra']['description'],
+    '#default_value' => $filter?_webform_filter_values($component['value']) : $component['value'],
     '#prefix' => '<div class="webform-component-esign" id="webform-component-' . $component['form_key'] . '">',
     '#suffix' => '</div>',
     '#element_validate' => array('esign_webform_validate_esign'),
@@ -130,13 +130,13 @@ function _webform_display_esign($component, $value, $format = 'html') {
     '#title' => $component['name'],
     '#weight' => $component['weight'],
     '#theme' => 'webform_display_esign',
-    '#theme_wrappers' => $format == 'html' ? array('webform_element') : array('webform_element_text'),
+    '#theme_wrappers' => $format == 'html'?array('webform_element') : array('webform_element_text'),
     '#post_render' => array('webform_element_wrapper'),
     '#field_prefix' => $component['extra']['field_prefix'],
     '#field_suffix' => $component['extra']['field_suffix'],
     '#component' => $component,
     '#format' => $format,
-    '#value' => isset($value) ? esign_webform_display_format($value) : '',
+    '#value' => isset($value)?esign_webform_display_format($value) : '',
   );
 }
 
@@ -186,6 +186,7 @@ function esign_webform_webform_validation_validate($validator_name, $items, $com
  * Format the output of data for this component.
  */
 function theme_webform_display_esign($variables) {
+  // TODO: Should this theme webform_display_esign be declared in hook_theme()?
   $element = $variables['element'];
   $value = $element['#format'] == 'html' ? $element['#value'] : $element['#value'];
   return $value !== '' ? $value : '';
@@ -283,11 +284,11 @@ function esign_webform_display_format($value) {
   $signer_name = '';
   $signer_title = '';
 
-  if(isset($value['signer_name'])) {
+  if (isset($value['signer_name'])) {
     $signer_name = $value['signer_name'];
   }
 
-  if(isset($value['signer_title'])) {
+  if (isset($value['signer_title'])) {
     $signer_title = $value['signer_title'];
   }
 

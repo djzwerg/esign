@@ -4,20 +4,20 @@
  */
 
 (function ($) {
-  Drupal.behaviors.esign = {
+  Backdrop.behaviors.esign = {
     attach: function (context, settings) {
-      activateEsign();
+      activate_esign();
     },
     detach: function (context, settings) {
-      activateEsign();
+      activate_esign();
     }
   };
 
   $(document).ready(function () {
-    activateEsign();
+    activate_esign();
   });
 
-  function activateEsign() {
+  function activate_esign() {
     $('.esign_container').each(function () {
       var thisContainer = $(this);
       var settings = JSON.parse($(this).attr('data-settings'));
@@ -44,7 +44,7 @@
 
       // Add the "clear" button.
       thisContainer.find('.esign_panel .clear-container').remove();
-      thisContainer.find('.esign_panel').append('<div class="clear-container"><br/><a href="#" class="clear">' + Drupal.t('Clear Signature') + '</a></div>');
+      thisContainer.find('.esign_panel').append('<div class="clear-container"><br/><a href="#" class="clear">' + Backdrop.t('Clear Signature') + '</a></div>');
 
       // Make the clear button work.
       thisContainer.find('.esign_panel .clear').click(function (e) {
@@ -52,19 +52,19 @@
         javascript:signaturePad.clear();
         signatureCapture.val("");
         thisContainer.find('.esign_panel').attr('data-signature', '');
-        resizeCanvas(canvas, signaturePad, signatureCapture, settings);
+        resize_canvas(canvas, signaturePad, signatureCapture, settings);
       });
 
       // Call the "resize" function for high-DPI screens.
-      resizeCanvas(canvas, signaturePad, signatureCapture, settings);
+      resize_canvas(canvas, signaturePad, signatureCapture, settings);
 
       $(window).on('orientationchange', function () {
-        resizeCanvas(canvas, signaturePad, signatureCapture, settings);
+        resize_canvas(canvas, signaturePad, signatureCapture, settings);
       });
     });
   }
 
-  function resizeCanvas(canvas, signaturePad, signatureCapture, settings) {
+  function resize_canvas(canvas, signaturePad, signatureCapture, settings) {
     // When zoomed out to less than 100%, for some very strange reason,
     // some browsers report devicePixelRatio as less than 1
     // and only part of the canvas is cleared then.
@@ -81,7 +81,7 @@
   }
 
   $(window).resize(function () {
-    // resizeCanvas(canvas, signaturePad, signatureCapture)
+    // resize_canvas(canvas, signaturePad, signatureCapture)
   });
 
 })(jQuery);

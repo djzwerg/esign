@@ -1,8 +1,7 @@
 name = E-Sign Field
 description = Allows users to add e-signable fields using HTML 5 technology.
-core = 7.x
-php = 5.5
+backdrop = 1.x
+type = module
 package = Content
 stylesheets[all][] = css/esign.css
-dependencies[] = jquery_update
 dependencies[] = field

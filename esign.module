@@ -39,6 +39,7 @@ function esign_field_formatter_info() {
  */
 function esign_field_widget_info() {
   // Include the default settings, too!
+
   return array(
     'esign_signature_widget' => array(
       'label' => t('E-Signature'),
@@ -66,9 +67,9 @@ function esign_field_widget_info() {
  */
 function esign_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
-  $settings = esign_field_widget_info()['esign_signature_widget']['settings'];
+  $settings = esign_field_widget_info() ['esign_signature_widget'] ['settings'];
 
-  if(isset($widget['settings']['advanced_settings'])) {
+  if (isset($widget['settings']['advanced_settings'])) {
     $settings = array_merge($settings, $widget['settings']['advanced_settings']);
   }
 
@@ -174,9 +175,11 @@ function esign_field_widget_settings_form($field, $instance) {
  */
 function esign_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   // Parse the settings into a string.
+
   $settings = $instance['widget']['settings']['advanced_settings'];
 
   // We only need this for this field.
+
   switch ($instance['widget']['type']) {
     case 'esign_signature_widget':
       if (isset($field['cardinality']) && $field['cardinality'] == 1) {
@@ -247,10 +250,12 @@ function esign_element_info() {
  */
 function esign_form_process($element, $form_state, $complete_form = array()) {
   // Get the default settings.
+
   $settings = esign_field_widget_info();
   $settings = $settings['esign_signature_widget']['settings'];
 
   // Override the default settings with the ones passed in via the form.
+
   $settings['hide_name'] = $element['#hide_name'];
   $settings['hide_title'] = $element['#hide_title'];
 
@@ -283,9 +288,12 @@ function esign_signature_form_base($langcode, $items, $delta, $element, $setting
     $title = check_plain($element['#title']);
   }
 
+
   // Load the signature pad JS from CDN.
-  drupal_add_js('https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js');
-  drupal_add_js(drupal_get_path('module', 'esign') . '/js/esign.js');
+
+  $module_path = backdrop_get_path('module', 'esign');
+  backdrop_add_js($module_path . '/libraries/signature_pad/signature_pad.min.js');
+  backdrop_add_js(backdrop_get_path('module', 'esign') . '/js/esign.js');
 
   $description = '';
   if ($element['#description']) {
@@ -310,7 +318,7 @@ function esign_signature_form_base($langcode, $items, $delta, $element, $setting
     '#default_value' => isset($items[$delta]['esignature']) ? $items[$delta]['esignature'] : '',
   );
 
-  if($settings['hide_name'] == FALSE) {
+  if ($settings['hide_name'] == FALSE) {
     $element['signer_name'] = array(
       '#type' => 'textfield',
       '#title' => t('Signer Name'),
@@ -321,7 +329,7 @@ function esign_signature_form_base($langcode, $items, $delta, $element, $setting
     );
   }
 
-  if($settings['hide_title'] == FALSE) {
+  if ($settings['hide_title'] == FALSE) {
     $element['signer_title'] = array(
       '#type' => 'textfield',
       '#title' => t('Signer Title'),

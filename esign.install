@@ -10,6 +10,7 @@
  */
 function esign_field_schema($field) {
   // Define the column schema.
+
   $columns = array(
     'esignature' => array(
       'type' => 'text',
@@ -34,6 +35,7 @@ function esign_field_schema($field) {
   );
 
   // Define the indexes.
+
   $indexes = array(
     'signer_name' => array('signer_name'),
     'signer_title' => array('signer_title'),
